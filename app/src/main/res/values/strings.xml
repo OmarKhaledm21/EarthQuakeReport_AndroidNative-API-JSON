@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EarthquakeActivity</string>
+    <string name="no_earthquakes">There is not earthquakes data yet.</string>
 </resources>

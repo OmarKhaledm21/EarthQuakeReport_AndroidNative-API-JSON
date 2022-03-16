@@ -8,8 +8,13 @@ import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.projects.earthquakeactivity.Model.Earthquake;
 
@@ -27,13 +32,33 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
-        Bundle bundle = new Bundle();
-        bundle.putString("URL", DATA_URL);
-        getSupportLoaderManager().initLoader(1, bundle, this).forceLoad();
+
+        ListView earthquakeListView = (ListView) findViewById(R.id.list);
+        TextView emptyView = (TextView) findViewById(R.id.empty_view);
+        emptyView.setText(R.string.no_earthquakes);
+        earthquakeListView.setEmptyView(emptyView);
+
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        // Get details on the currently active default data network
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        // If there is a network connection, fetch data
+        if (networkInfo != null && networkInfo.isConnected()) {
+
+            Bundle bundle = new Bundle();
+            bundle.putString("URL", DATA_URL);
+            getSupportLoaderManager().initLoader(1, bundle, this).forceLoad();
+
+        }else{
+            emptyView.setText("NO INTERNET CONNECTION!");
+        }
 
     }
 
     public void updateUI(ArrayList<Earthquake> earthquakes) {
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.pb);
+        progressBar.setVisibility(View.GONE);
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
 
         EarthquakeAdapter adapter = new EarthquakeAdapter(this, earthquakes);

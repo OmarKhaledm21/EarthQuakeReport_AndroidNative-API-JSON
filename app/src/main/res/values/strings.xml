@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">EarthQuakeReportApp</string>
+    <string name="no_earthquakes">Loading Earthquakes Data</string>
+</resources>
